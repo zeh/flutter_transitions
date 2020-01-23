@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Route createRouteWithTransition() {
+Route createRouteWithTransitionTween() {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => ThirdScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -32,6 +32,21 @@ Route createRouteWithTransition() {
       return SlideTransition(
         position: offsetAnimation,
         child: child,
+      );
+    },
+  );
+}
+
+Route createRouteWithTransitionFade() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => ThirdScreen(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(
+        opacity: animation,
+        child: FadeTransition(
+          opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
+          child: child,
+        ),
       );
     },
   );
@@ -59,7 +74,13 @@ class FirstScreen extends StatelessWidget {
             RaisedButton(
               child: Text('Open Third screen (custom transition, tweens)'),
               onPressed: () {
-                Navigator.push(context, createRouteWithTransition());
+                Navigator.push(context, createRouteWithTransitionTween());
+              },
+            ),
+            RaisedButton(
+              child: Text('Open Third screen (custom transition, fade)'),
+              onPressed: () {
+                Navigator.push(context, createRouteWithTransitionFade());
               },
             ),
           ],
