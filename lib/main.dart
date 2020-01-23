@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_transitions/transitions/CustomTransition.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -52,6 +54,21 @@ Route createRouteWithTransitionFade() {
   );
 }
 
+Route createRouteWithTransitionCustom() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => ThirdScreen(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return CustomTransition(
+        opacity: animation,
+        child: CustomTransition(
+          opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
+          child: child,
+        ),
+      );
+    },
+  );
+}
+
 class FirstScreen extends StatelessWidget {
   static const routeName = '/first';
 
@@ -81,6 +98,12 @@ class FirstScreen extends StatelessWidget {
               child: Text('Open Third screen (custom transition, fade)'),
               onPressed: () {
                 Navigator.push(context, createRouteWithTransitionFade());
+              },
+            ),
+            RaisedButton(
+              child: Text('Open Third screen (custom transition, custom code)'),
+              onPressed: () {
+                Navigator.push(context, createRouteWithTransitionCustom());
               },
             ),
           ],
