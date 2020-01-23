@@ -45,10 +45,7 @@ Route createRouteWithTransitionFade() {
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return FadeTransition(
         opacity: animation,
-        child: FadeTransition(
-          opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
-          child: child,
-        ),
+        child: child,
       );
     },
   );
@@ -60,10 +57,7 @@ Route createRouteWithTransitionCustom() {
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return CustomTransition(
         opacity: animation,
-        child: CustomTransition(
-          opacity: Tween<double>(begin: 1.0, end: 0.0).animate(secondaryAnimation),
-          child: child,
-        ),
+        child: child,
       );
     },
   );
