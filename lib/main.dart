@@ -53,6 +53,7 @@ Route createRouteWithTransitionFade() {
 
 Route createRouteWithTransitionCustom() {
   return PageRouteBuilder(
+    transitionDuration: Duration(milliseconds: 750),
     pageBuilder: (context, animation, secondaryAnimation) => ThirdScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return CustomTransition(
@@ -113,6 +114,7 @@ class SecondScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff99bb99),
       appBar: AppBar(
         title: Text("Second Screen"),
       ),
@@ -134,15 +136,24 @@ class ThirdScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff9966bb),
       appBar: AppBar(
         title: Text("Third Screen"),
       ),
       body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go back!'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.network(
+              "https://vignette.wikia.nocookie.net/google/images/9/98/Images-0.jpeg/revision/latest?cb=20180309024157",
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Go back!'),
+            ),
+          ],
         ),
       ),
     );
