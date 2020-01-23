@@ -1,6 +1,8 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
+import 'RenderAnimatedCustom.dart';
+
 /// A custom transition to animate a widget.
 /// This is a copy of FadeTransition: https://github.com/flutter/flutter/blob/27321ebbad/packages/flutter/lib/src/widgets/transitions.dart#L530
 class CustomTransition extends SingleChildRenderObjectWidget {
@@ -34,17 +36,17 @@ class CustomTransition extends SingleChildRenderObjectWidget {
   final bool alwaysIncludeSemantics;
 
   @override
-  RenderAnimatedOpacity createRenderObject(BuildContext context) {
-    return RenderAnimatedOpacity(
-      opacity: animation,
+  RenderAnimatedCustom createRenderObject(BuildContext context) {
+    return RenderAnimatedCustom(
+      phase: animation,
       alwaysIncludeSemantics: alwaysIncludeSemantics,
     );
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderAnimatedOpacity renderObject) {
+  void updateRenderObject(BuildContext context, RenderAnimatedCustom renderObject) {
     renderObject
-      ..opacity = animation
+      ..phase = animation
       ..alwaysIncludeSemantics = alwaysIncludeSemantics;
   }
 
