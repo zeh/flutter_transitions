@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
       routes: {
         FirstScreen.routeName: (context) => FirstScreen(),
         SecondScreen.routeName: (context) => SecondScreen(),
+        ThirdScreen.routeName: (context) => ThirdScreen(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
 
 Route createRouteWithTransition() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => SecondScreen(),
+    pageBuilder: (context, animation, secondaryAnimation) => ThirdScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(0.0, 1.0);
       var end = Offset.zero;
@@ -46,11 +47,22 @@ class FirstScreen extends StatelessWidget {
         title: Text('First Screen'),
       ),
       body: Center(
-        child: RaisedButton(
-          child: Text('Open Second screen'),
-          onPressed: () {
-            Navigator.push(context, createRouteWithTransition());
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              child: Text('Open Second screen (default transition)'),
+              onPressed: () {
+                Navigator.pushNamed(context, SecondScreen.routeName);
+              },
+            ),
+            RaisedButton(
+              child: Text('Open Third screen (custom transition, tweens)'),
+              onPressed: () {
+                Navigator.push(context, createRouteWithTransition());
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -65,6 +77,27 @@ class SecondScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Second Screen"),
+      ),
+      body: Center(
+        child: RaisedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
+
+class ThirdScreen extends StatelessWidget {
+  static const routeName = '/third';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Third Screen"),
       ),
       body: Center(
         child: RaisedButton(
