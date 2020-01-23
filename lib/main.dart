@@ -19,6 +19,23 @@ class MyApp extends StatelessWidget {
   }
 }
 
+Route createRouteWithTransition() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => SecondScreen(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(0.0, 1.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
+}
+
 class FirstScreen extends StatelessWidget {
   static const routeName = '/first';
 
@@ -32,7 +49,7 @@ class FirstScreen extends StatelessWidget {
         child: RaisedButton(
           child: Text('Open Second screen'),
           onPressed: () {
-            Navigator.pushNamed(context, SecondScreen.routeName);
+            Navigator.push(context, createRouteWithTransition());
           },
         ),
       ),
