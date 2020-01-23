@@ -9,10 +9,10 @@ class CustomTransition extends SingleChildRenderObjectWidget {
   /// The [opacity] argument must not be null.
   const CustomTransition({
     Key key,
-    @required this.opacity,
+    @required this.animation,
     this.alwaysIncludeSemantics = false,
     Widget child,
-  }) : assert(opacity != null),
+  }) : assert(animation != null),
        super(key: key, child: child);
 
   /// The animation that controls the opacity of the child.
@@ -21,7 +21,7 @@ class CustomTransition extends SingleChildRenderObjectWidget {
   /// painted with an opacity of v. For example, if v is 0.5, the child will be
   /// blended 50% with its background. Similarly, if v is 0.0, the child will be
   /// completely transparent.
-  final Animation<double> opacity;
+  final Animation<double> animation;
 
   /// Whether the semantic information of the children is always included.
   ///
@@ -36,7 +36,7 @@ class CustomTransition extends SingleChildRenderObjectWidget {
   @override
   RenderAnimatedOpacity createRenderObject(BuildContext context) {
     return RenderAnimatedOpacity(
-      opacity: opacity,
+      opacity: animation,
       alwaysIncludeSemantics: alwaysIncludeSemantics,
     );
   }
@@ -44,14 +44,14 @@ class CustomTransition extends SingleChildRenderObjectWidget {
   @override
   void updateRenderObject(BuildContext context, RenderAnimatedOpacity renderObject) {
     renderObject
-      ..opacity = opacity
+      ..opacity = animation
       ..alwaysIncludeSemantics = alwaysIncludeSemantics;
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Animation<double>>('opacity', opacity));
+    properties.add(DiagnosticsProperty<Animation<double>>('animation', animation));
     properties.add(FlagProperty('alwaysIncludeSemantics', value: alwaysIncludeSemantics, ifTrue: 'alwaysIncludeSemantics'));
   }
 }

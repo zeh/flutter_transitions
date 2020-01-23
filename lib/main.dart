@@ -56,7 +56,7 @@ Route createRouteWithTransitionCustom() {
     pageBuilder: (context, animation, secondaryAnimation) => ThirdScreen(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return CustomTransition(
-        opacity: animation,
+        animation: animation,
         child: child,
       );
     },
