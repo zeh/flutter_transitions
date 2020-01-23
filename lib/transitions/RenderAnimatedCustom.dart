@@ -1,4 +1,3 @@
-import 'dart:ui' as ui show Color;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
@@ -16,7 +15,7 @@ class RenderAnimatedCustom extends RenderProxyBox {
     this.phase = phase;
   }
 
-  int _alpha;
+  double _lastUsedPhase;
 
   @override
   bool get alwaysNeedsCompositing => child != null && _currentlyNeedsCompositing;
@@ -33,13 +32,10 @@ class RenderAnimatedCustom extends RenderProxyBox {
   Animation<double> _phase;
   set phase(Animation<double> value) {
     assert(value != null);
-    if (_phase == value)
-      return;
-    if (attached && _phase != null)
-      _phase.removeListener(_updatePhase);
+    if (_phase == value) return;
+    if (attached && _phase != null) _phase.removeListener(_updatePhase);
     _phase = value;
-    if (attached)
-      _phase.addListener(_updatePhase);
+    if (attached) _phase.addListener(_updatePhase);
     _updatePhase();
   }
 
@@ -51,8 +47,7 @@ class RenderAnimatedCustom extends RenderProxyBox {
   bool get alwaysIncludeSemantics => _alwaysIncludeSemantics;
   bool _alwaysIncludeSemantics;
   set alwaysIncludeSemantics(bool value) {
-    if (value == _alwaysIncludeSemantics)
-      return;
+    if (value == _alwaysIncludeSemantics) return;
     _alwaysIncludeSemantics = value;
     markNeedsSemanticsUpdate();
   }
@@ -71,42 +66,45 @@ class RenderAnimatedCustom extends RenderProxyBox {
   }
 
   void _updatePhase() {
-    final int oldAlpha = _alpha;
-    _alpha = ui.Color.getAlphaFromOpacity(_phase.value);
-    if (oldAlpha != _alpha) {
+    final double newPhase = _phase.value;
+    if (_lastUsedPhase != newPhase) {
+      _lastUsedPhase = newPhase;
       final bool didNeedCompositing = _currentlyNeedsCompositing;
-      _currentlyNeedsCompositing = _alpha > 0 && _alpha < 255;
-      if (child != null && didNeedCompositing != _currentlyNeedsCompositing)
+      _currentlyNeedsCompositing = _lastUsedPhase > 0 && _lastUsedPhase < 1;
+      if (child != null && didNeedCompositing != _currentlyNeedsCompositing) {
         markNeedsCompositingBitsUpdate();
+      }
       markNeedsPaint();
-      if (oldAlpha == 0 || _alpha == 0)
+      if (newPhase == 0 || _lastUsedPhase == 0) {
         markNeedsSemanticsUpdate();
+      }
     }
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
     if (child != null) {
-      if (_alpha == 0) {
+      if (_lastUsedPhase == 0) {
         // No need to keep the layer. We'll create a new one if necessary.
         layer = null;
         return;
       }
-      if (_alpha == 255) {
+      if (_lastUsedPhase == 1) {
         // No need to keep the layer. We'll create a new one if necessary.
         layer = null;
         context.paintChild(child, offset);
         return;
       }
       assert(needsCompositing);
-      layer = context.pushOpacity(offset, _alpha, super.paint, oldLayer: layer);
+      layer = context.pushOpacity(offset, (_lastUsedPhase * 255).round(), super.paint, oldLayer: layer);
     }
   }
 
   @override
   void visitChildrenForSemantics(RenderObjectVisitor visitor) {
-    if (child != null && (_alpha != 0 || alwaysIncludeSemantics))
+    if (child != null && (_lastUsedPhase != 0 || alwaysIncludeSemantics)) {
       visitor(child);
+    }
   }
 
   @override
